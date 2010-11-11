@@ -13,7 +13,7 @@ def cacheHTML(controller, function, **kwargs):
     if html is None:
         html = function()
         # don't cache if in development or for admins
-        if DEBUG and not users.is_current_user_admin():
+        if not DEBUG and not users.is_current_user_admin():
             # cache for 1 day by default
             expires = kwargs.get("expires", 86400)
             minify = kwargs.get("minify", True)
