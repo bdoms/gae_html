@@ -8,7 +8,7 @@ DEBUG = os.environ.get('SERVER_SOFTWARE', '').startswith('Development')
 
 
 def cacheHTML(controller, function, **kwargs):
-    key = controller.request.path
+    key = controller.request.path + controller.request.query_string
     html = memcache.get(key)
     if html is None:
         html = function()
@@ -29,7 +29,7 @@ def cacheHTML(controller, function, **kwargs):
 def renderIfCached(action):
     def decorate(*args,  **kwargs):
         controller = args[0]
-        key = controller.request.path
+        key = controller.request.path + controller.request.query_string
         html = memcache.get(key)
         # don't serve a cached version in development or to admins
         if html and not DEBUG and not users.is_current_user_admin():
