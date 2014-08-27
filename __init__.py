@@ -18,7 +18,8 @@ def cacheHTML(controller, function, **kwargs):
             expires = kwargs.get("expires", 86400)
             minify = kwargs.get("minify", True)
             if minify:
-                minifier = HTMLMinifier()
+                include_comments = kwargs.get("include_comments", False)
+                minifier = HTMLMinifier(include_comments=include_comments)
                 minifier.feed(html)
                 html = minifier.close()
             memcache.add(key, html, expires)

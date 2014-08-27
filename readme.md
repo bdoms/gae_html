@@ -14,9 +14,13 @@ from gae_html import cacheHTML, renderIfCached
 ```
 
 `cacheHTML` takes a `RequestHandler` and a function to produce the HTML as its arguments.
-It also optionally takes an int `expires` keyword argument to specify how many seconds
-to cache for, as well as a bool `minify` keyword argument to control minification, which
-is on by default. In the render method for your controller or handler, do something like:
+Optional keyword arguments include:
+
+ * `expires` (int) default: 86400, number of seconds to cache for
+ * `minify` (bool) default: True, whether to minify or not
+ * `include_comments` (bool) default: False, whether to include comments or not
+
+To use it in the render method for your controller or handler, do something like:
 
 ```python
 def render(self, template, **kwargs):

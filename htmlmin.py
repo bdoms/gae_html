@@ -8,8 +8,9 @@ WHITESPACE = re.compile(r"\s+")
 
 class HTMLMinifier(HTMLParser):
 
-    def __init__(self):
+    def __init__(self, include_comments=False):
         HTMLParser.__init__(self)
+        self.include_comments = include_comments
         self.output = ""
         self.pre = False
 
@@ -36,7 +37,9 @@ class HTMLMinifier(HTMLParser):
         self.output += data
 
     def handle_comment(self, data):
-        # get rid of all comments by returning nothing
+        # get rid of all comments by returning nothing if they aren't enabled
+        if self.include_comments:
+            self.output += "<!--" + data + "-->"
         return
 
     def handle_decl(self, decl):
@@ -51,4 +54,3 @@ class HTMLMinifier(HTMLParser):
     def close(self):
         HTMLParser.close(self)
         return self.output
-
