@@ -1,4 +1,4 @@
-Copyright &copy; 2010, [Brendan Doms](http://www.bdoms.com/)  
+Copyright &copy; 2010-2015, [Brendan Doms](http://www.bdoms.com/)  
 Licensed under the [MIT license](http://www.opensource.org/licenses/MIT)
 
 
@@ -18,6 +18,7 @@ Optional keyword arguments include:
 
  * `expires` (int) default: 86400, number of seconds to cache for
  * `minify` (bool) default: True, whether to minify or not
+ * `use_datastore` (bool) default: False, whether to use the datastore as a fallback cache or not
  * `include_comments` (bool) default: False, whether to include comments or not
 
 To use it in the render method for your controller or handler, do something like:
@@ -37,11 +38,10 @@ in obvious circumstances like during development or if the user is an administra
 cached version of a page, if desired. It works like this:
 
 ```python
-@renderIfCached
+@renderIfCached()
 def get(self):
     # do some logic and handling of request
     self.render("template")
 ```
 
 Bug reports, feature requests, and patches are all welcome!
-
