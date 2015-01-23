@@ -10,7 +10,9 @@ DEBUG = os.environ.get('SERVER_SOFTWARE', '').startswith('Development')
 
 
 # decorator to skip straight to the cached version, or cache it if it doesn't exist
-def cacheAndRender(expires=86400, minify=True, include_comments=False, use_datastore=False):
+def cacheAndRender(expires=86400, minify=True, include_comments=False,
+        use_datastore=False, error_string='', error_attr=''):
+
     minifier = None
     if minify:
         minifier = HTMLMinifier(include_comments=include_comments)
@@ -18,6 +20,15 @@ def cacheAndRender(expires=86400, minify=True, include_comments=False, use_datas
     def wrap_action(action):
         def decorate(*args,  **kwargs):
             controller = args[0]
+
+            # if we're checking for errors and they're present, then return early to avoid caching
+            if error_string and error_attr and hasattr(controller, error_attr):
+                attr = getattr(controller, error_attr)
+                if error_string in attr:
+                    html = action(*args, **kwargs)
+                    controller.response.out.write(html)
+                    return html
+
             key = controller.request.path + controller.request.query_string
             html = memcache.get(key)
 
@@ -41,6 +52,7 @@ def cacheAndRender(expires=86400, minify=True, include_comments=False, use_datas
                         html_cache.put()
 
                 controller.response.out.write(html)
+            return html
         return decorate
     return wrap_action
 

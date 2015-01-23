@@ -53,4 +53,6 @@ class HTMLMinifier(HTMLParser):
 
     def close(self):
         HTMLParser.close(self)
-        return self.output
+        final = self.output
+        self.output = ""
+        return final
