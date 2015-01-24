@@ -33,8 +33,14 @@ Behavior is controlled through optional keyword arguments:
  * `minify` (bool) default: True, whether to minify or not
  * `include_comments` (bool) default: False, whether to include comments or not when minifying
  * `use_datastore` (bool) default: False, whether to use the datastore as a fallback cache or not
- * `error_string` (string) default: '', if present, skips caching if this string is in the `error_attr`
- * `error_attr` (string) default: '', attribute for a dictionary like object to check for errors (most often a session)
+ * `skip_check` (function(handler)) default: None, if present skips caching when returning `True`
 
+A more complex example that avoids caching when errors are present in a session might look like:
+
+```python
+@cacheAndRender(skip_check=lambda handler: 'errors' in handler.session)
+def get(self):
+    # ...
+```
 
 Bug reports, feature requests, and patches are all welcome!
