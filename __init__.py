@@ -23,9 +23,7 @@ def cacheAndRender(expires=86400, minify=True, include_comments=False,
 
             # if we're checking for errors and they're present, then return early to avoid caching
             if skip_check and skip_check(controller):
-                html = action(*args, **kwargs)
-                controller.response.out.write(html)
-                return html
+                return action(*args, **kwargs)
 
             key = controller.request.path + controller.request.query_string
             html = memcache.get(key)
@@ -34,7 +32,8 @@ def cacheAndRender(expires=86400, minify=True, include_comments=False,
                 html = getFromDatastore(key)
 
             if not html:
-                html = action(*args, **kwargs)
+                action(*args, **kwargs)
+                html = controller.response.unicode_body
 
             if html:
                 if minifier:
@@ -49,7 +48,6 @@ def cacheAndRender(expires=86400, minify=True, include_comments=False,
                         html_cache = HTMLCache(id=key, html=html, expires=expires)
                         html_cache.put()
 
-                controller.response.out.write(html)
             return html
         return decorate
     return wrap_action
