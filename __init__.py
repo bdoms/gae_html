@@ -27,9 +27,12 @@ def cacheAndRender(expires=86400, minify=True, include_comments=False,
 
             key = controller.request.path + controller.request.query_string
             html = memcache.get(key)
+            in_memcache = bool(html)
 
+            in_datastore = False
             if not html and use_datastore:
                 html = getFromDatastore(key)
+                in_datastore = bool(html)
 
             if not html:
                 action(*args, **kwargs)
@@ -40,11 +43,16 @@ def cacheAndRender(expires=86400, minify=True, include_comments=False,
                     minifier.feed(html)
                     html = minifier.close()
 
+                if in_memcache or in_datastore:
+                    # the action wasn't ever called, so explicitly render the output here
+                    controller.response.write(html)
+
                 # don't cache if in development or for admins
                 if not DEBUG and not users.is_current_user_admin():
-                    memcache.add(key, html, expires)
+                    if not in_memcache:
+                        memcache.add(key, html, expires)
 
-                    if use_datastore:
+                    if use_datastore and not in_datastore:
                         html_cache = HTMLCache(id=key, html=html, expires=expires)
                         html_cache.put()
 
