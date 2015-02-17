@@ -1,3 +1,4 @@
+import logging
 import os
 from datetime import datetime, timedelta
 
@@ -40,8 +41,13 @@ def cacheAndRender(expires=86400, minify=True, include_comments=False,
 
             if html:
                 if minifier:
-                    minifier.feed(html)
-                    html = minifier.close()
+                    try:
+                        minifier.feed(html)
+                    except AssertionError:
+                        logging.warning("HTML Parse Error")
+                        minifier.output = ""
+                    else:
+                        html = minifier.close()
 
                 if in_memcache or in_datastore:
                     # the action wasn't ever called, so explicitly render the output here
