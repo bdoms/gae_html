@@ -12,7 +12,7 @@ DEBUG = os.environ.get('SERVER_SOFTWARE', '').startswith('Development')
 
 # decorator to skip straight to the cached version, or cache it if it doesn't exist
 def cacheAndRender(expires=86400, minify=True, include_comments=False,
-        use_datastore=False, skip_check=None):
+        use_datastore=False, skip_check=None, content_type=None):
 
     def wrap_action(action):
         def decorate(*args,  **kwargs):
@@ -38,11 +38,13 @@ def cacheAndRender(expires=86400, minify=True, include_comments=False,
             if html:
                 if in_memcache or in_datastore:
                     # the action wasn't ever called, so explicitly render the output here
+                    if content_type:
+                        controller.response.headers['Content-Type'] = content_type
                     controller.response.write(html)
 
                 # don't cache if in development or for admins
                 if not DEBUG and not users.is_current_user_admin():
-                    if minify and not in_memcache or (use_datastore and not in_datastore):
+                    if minify and (not in_memcache or (use_datastore and not in_datastore)):
                         minifier = HTMLMinifier(include_comments=include_comments)
                         try:
                             minifier.feed(html)

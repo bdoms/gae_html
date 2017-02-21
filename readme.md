@@ -1,4 +1,4 @@
-Copyright &copy; 2010-2015, [Brendan Doms](http://www.bdoms.com/)  
+Copyright &copy; 2010-2017, [Brendan Doms](http://www.bdoms.com/)  
 Licensed under the [MIT license](http://www.opensource.org/licenses/MIT)
 
 
@@ -34,6 +34,7 @@ Behavior is controlled through optional keyword arguments:
  * `include_comments` (bool) default: False, whether to include comments or not when minifying
  * `use_datastore` (bool) default: False, whether to use the datastore as a fallback cache or not
  * `skip_check` (function(handler)) default: None, if present skips caching when returning `True`
+ * `content_type` (string) default: None, if present sets the `Content-Type` header
 
 A more complex example that avoids caching when errors are present in a session might look like:
 
