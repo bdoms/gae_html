@@ -26,7 +26,7 @@ class HTMLMinifier(HTMLParser):
         text = self.get_starttag_text()
         if tag not in self.tags:
             orig_index = text.lower().index(tag)
-            orig_tag = text[orig_index:tag.length]
+            orig_tag = text[orig_index:orig_index + len(tag)]
             self.tags[tag] = orig_tag
 
         self.output += text
