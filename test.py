@@ -1,10 +1,11 @@
 import unittest
+import sys
 from time import sleep
 
 try:
     import dev_appserver
-except ImportError, e:
-    raise ImportError, "App Engine must be in PYTHONPATH."
+except ImportError:
+    raise ImportError('App Engine must be in PYTHONPATH.')
     sys.exit()
 
 dev_appserver.fix_sys_path()
