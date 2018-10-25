@@ -1,7 +1,7 @@
 
 import re
 import logging
-from HTMLParser import HTMLParser
+from html.parser import HTMLParser
 
 WHITESPACE = re.compile(r"\s+")
 
